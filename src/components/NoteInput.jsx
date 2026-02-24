@@ -1,34 +1,21 @@
-import { useState } from "react";
-
-const NoteInput = () => {
-  const [note, setNote] = useState("");
-
+const NoteInput = ({ note, setNote }) => {
   return (
-    <div style={styles.container}>
+    <div style={{ width: "60%", margin: "40px auto", textAlign: "center" }}>
       <h3>Optional Note</h3>
       <textarea
-        style={styles.textarea}
-        placeholder="Write a few words about your day..."
         value={note}
         onChange={(e) => setNote(e.target.value)}
+        placeholder="Write a few words about your day..."
+        style={{
+          width: "100%",
+          height: "100px",
+          padding: "10px",
+          borderRadius: "8px",
+          border: "1px solid #ddd",
+        }}
       />
     </div>
   );
-};
-
-const styles = {
-  container: {
-    width: "60%",
-    margin: "40px auto",
-    textAlign: "center",
-  },
-  textarea: {
-    width: "100%",
-    height: "100px",
-    padding: "10px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-  },
 };
 
 export default NoteInput;

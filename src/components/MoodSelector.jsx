@@ -1,52 +1,29 @@
-import { useState } from "react";
-
-const MoodSelector = () => {
-  const [selectedMood, setSelectedMood] = useState(null);
-
+const MoodSelector = ({ mood, setMood }) => {
   const moods = ["😞", "😐", "🙂", "😊", "😄"];
 
   return (
-    <div style={styles.container}>
+    <div style={{ textAlign: "center", marginTop: "30px" }}>
       <h2>How are you feeling today?</h2>
-      <div style={styles.moodRow}>
-        {moods.map((mood, index) => (
+      <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
+        {moods.map((m, index) => (
           <button
             key={index}
+            onClick={() => setMood(m)}
             style={{
-              ...styles.button,
-              border:
-                selectedMood === mood
-                  ? "2px solid #8B0000"
-                  : "1px solid #ddd",
+              fontSize: "24px",
+              padding: "10px",
+              borderRadius: "50%",
+              border: mood === m ? "2px solid #8B0000" : "1px solid #ddd",
+              background: "white",
+              cursor: "pointer",
             }}
-            onClick={() => setSelectedMood(mood)}
           >
-            {mood}
+            {m}
           </button>
         ))}
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    textAlign: "center",
-    marginTop: "30px",
-  },
-  moodRow: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "20px",
-    marginTop: "15px",
-  },
-  button: {
-    fontSize: "24px",
-    padding: "10px",
-    borderRadius: "50%",
-    background: "white",
-    cursor: "pointer",
-  },
 };
 
 export default MoodSelector;
