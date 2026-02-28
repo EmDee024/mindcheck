@@ -4,46 +4,85 @@ import MoodSelector from "../components/MoodSelector";
 import NoteInput from "../components/NoteInput";
 import QuoteCard from "../components/QuoteCard";
 
-const Home = () => {
+const Home = ({ moodHistory, setMoodHistory }) => {
   const [mood, setMood] = useState(null);
   const [note, setNote] = useState("");
   const [quote, setQuote] = useState(null);
 
   // Fetch quote on mount
   useEffect(() => {
-    fetch("https://zenquotes.io/api/random")
-      .then((res) => res.json())
-      .then((data) => {
-        setQuote(data[0]);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+    const fetchQuote = async () => {
+      try {
+        const res = await fetch(
+          "https://api.quotable.io/random"
+        );
+        const data = await res.json();
 
-  // Save entry to localStorage
-  const saveEntry = (selectedMood) => {
-    const entry = {
-      mood: selectedMood,
-      note,
-      date: new Date().toLocaleDateString(),
+        setQuote({
+          q: data.content,
+          a: data.author,
+        });
+      } catch (error) {
+        console.error("Quote error:", error);
+      }
     };
 
-    const existing = JSON.parse(localStorage.getItem("moodEntries")) || [];
+    fetchQuote();
+  }, []);
+
+  const handleSave = () => {
+    if (!mood) {
+      alert("Please select a mood first.");
+      return;
+    }
+
+    const today = new Date().toLocaleDateString();
+
+    const newEntry = {
+      mood,
+      note,
+      date: today,
+    };
+
+    const updatedHistory = [
+      newEntry,
+      ...moodHistory,
+    ];
+
+    // Update state
+    setMoodHistory(updatedHistory);
+
+    // Save to localStorage
     localStorage.setItem(
-      "moodEntries",
-      JSON.stringify([entry, ...existing])
+      "moodHistory",
+      JSON.stringify(updatedHistory)
     );
 
-    alert("Mood saved!");
+    // Reset form
+    setMood(null);
+    setNote("");
+
+    alert("Mood saved successfully!");
   };
 
   return (
     <div>
       <Header />
-      <MoodSelector mood={mood} setMood={setMood} />
-      <NoteInput note={note} setNote={setNote} />
+
+      <MoodSelector
+        mood={mood}
+        setMood={setMood}
+      />
+
+      <NoteInput
+        note={note}
+        setNote={setNote}
+      />
 
       <div style={{ textAlign: "center" }}>
-        <button onClick={saveEntry}>Save Entry</button>
+        <button onClick={handleSave}>
+          Save Entry
+        </button>
       </div>
 
       <QuoteCard quote={quote} />
